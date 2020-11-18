@@ -18,12 +18,13 @@ namespace Circles_on_the_Form
         }
         private void Main_Form_MouseDown(object sender, MouseEventArgs e)
         {
-            CCircle cirle = new CCircle(/*e.X, e.Y*/);
-            this.CreateGraphics().DrawEllipse(new Pen(Color.Red, 3), cirle.x, cirle.y, 2 * cirle.rad, 2 * cirle.rad);
+            CCircle cirle = new CCircle(e.X, e.Y);
+            CreateGraphics().DrawEllipse(new Pen(Color.Azure, 2), cirle.x, cirle.y, 2 * cirle.rad, 2 * cirle.rad);
+            
         }
         private void ClearCanvas_Button_Click(object sender, EventArgs e)
         {
-
+            CreateGraphics().Clear(Color.Gray);
         }
         private void ClearStorage_Button_Click(object sender, EventArgs e)
         {
@@ -50,4 +51,50 @@ namespace Circles_on_the_Form
         }
         ~CCircle() { }
     }
+
+
+    //unsafe class Storage
+    //{
+    //    CCircle** circles;
+    //    Storage() { }
+
+    //    void initialisat(int count)
+    //    {
+    //        circles = new CCircle*[count];
+    //        for (int i = 0; i < count; ++i)
+    //            circles[i] = null;
+    //    }
+
+    //    void add_object(int index, CCircle* circle)
+    //    {
+    //        circles[index] = circle;
+    //    }
+
+    //    //void delete_object(int index)
+    //    //{
+    //    //    delete circles[index];
+    //    //    circles[index] = null;
+    //    //}
+
+    //    bool is_empty(int index)
+    //    {
+    //        if (circles[index] == null)
+    //            return true;
+    //        else return false;
+    //    }
+
+    //    int occupied(int size)
+    //    {
+    //        int count_occupied = 0;
+    //        for (int i = 0; i < size; ++i)
+    //            if (!is_empty(i))
+    //                ++count_occupied;
+    //        return count_occupied;
+    //    }
+
+    //    ~Storage()
+    //    {
+
+    //    }
+    //};
 }

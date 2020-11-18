@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_Form));
             this.ClearCanvas_Button = new System.Windows.Forms.Button();
             this.ClearStorage_Button = new System.Windows.Forms.Button();
             this.Cord_Label = new System.Windows.Forms.Label();
@@ -62,6 +63,7 @@
             // Cord_Label
             // 
             this.Cord_Label.AutoSize = true;
+            this.Cord_Label.ForeColor = System.Drawing.Color.Lime;
             this.Cord_Label.Location = new System.Drawing.Point(713, 9);
             this.Cord_Label.Name = "Cord_Label";
             this.Cord_Label.Size = new System.Drawing.Size(0, 13);
@@ -71,11 +73,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.Cord_Label);
             this.Controls.Add(this.ClearStorage_Button);
             this.Controls.Add(this.ClearCanvas_Button);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main_Form";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Лабораторная работа 4";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Main_Form_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Main_Form_MouseMove);
