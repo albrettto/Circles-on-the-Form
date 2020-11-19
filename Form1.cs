@@ -61,12 +61,32 @@ namespace Circles_on_the_Form
             CCircle circle = new CCircle(e.X, e.Y, Color.Azure);
             if (storage.Occupied(count_cells) == count_cells)
                 storage.Increase_Storage(ref count_cells);
-            storage.Add_object(index, ref circle, count_cells); // Добавляем круг в хранилище
-            Paint_Circle(ref storage, index); // Вызываем функцию отрисовки круга
-            index++;
+            if (Check_Circle(ref storage, count_cells, circle.x, circle.y) == -1)
+            {
+                storage.Add_object(index, ref circle, count_cells); // Добавляем круг в хранилище
+                Paint_Circle(ref storage, index); // Вызываем функцию отрисовки круга
+                index++;
+            }
         }
 
+        private int Check_Circle(ref Storage storage, int size, int x, int y)
+        {   // Проверяет есть ли уже круг с такими же координатами в хранилище
+            if (storage.Occupied(size) != 0)
+            {
+                for (int i = 0; i < size; ++i)
+                    if (!storage.Is_empty(i))
+                    {
+                        int x1 = storage.objects[i].x - 15;
+                        int x2 = storage.objects[i].x + 15;
+                        int y1 = storage.objects[i].y - 15;
+                        int y2 = storage.objects[i].y + 15;
 
+                        if ((x1 <= x && x <= x2) && (y1 <= y && y <= y2))
+                            return i;
+                    }
+            }
+            return -1;
+        }
     }
     public class CCircle
     {
