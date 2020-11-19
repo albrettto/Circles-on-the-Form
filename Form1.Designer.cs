@@ -33,6 +33,7 @@
             this.ClearStorage_Button = new System.Windows.Forms.Button();
             this.Cord_Label = new System.Windows.Forms.Label();
             this.Canvas_Panel = new System.Windows.Forms.Panel();
+            this.DeleteSelected_Button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ClearCanvas_Button
@@ -82,12 +83,26 @@
             this.Canvas_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Canvas_Panel_MouseDown);
             this.Canvas_Panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Canvas_Panel_MouseMove);
             // 
+            // DeleteSelected_Button
+            // 
+            this.DeleteSelected_Button.BackColor = System.Drawing.Color.Pink;
+            this.DeleteSelected_Button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.DeleteSelected_Button.ForeColor = System.Drawing.Color.DeepPink;
+            this.DeleteSelected_Button.Location = new System.Drawing.Point(278, 416);
+            this.DeleteSelected_Button.Name = "DeleteSelected_Button";
+            this.DeleteSelected_Button.Size = new System.Drawing.Size(127, 22);
+            this.DeleteSelected_Button.TabIndex = 4;
+            this.DeleteSelected_Button.Text = "Удалить выбранные";
+            this.DeleteSelected_Button.UseVisualStyleBackColor = false;
+            this.DeleteSelected_Button.Click += new System.EventHandler(this.DeleteSelected_Button_Click);
+            // 
             // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.DeleteSelected_Button);
             this.Controls.Add(this.Cord_Label);
             this.Controls.Add(this.ClearStorage_Button);
             this.Controls.Add(this.ClearCanvas_Button);
@@ -108,6 +123,7 @@
         private System.Windows.Forms.Button ClearStorage_Button;
         private System.Windows.Forms.Label Cord_Label;
         private System.Windows.Forms.Panel Canvas_Panel;
+        private System.Windows.Forms.Button DeleteSelected_Button;
     }
 }
 

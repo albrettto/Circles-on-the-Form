@@ -16,38 +16,57 @@ namespace Circles_on_the_Form
         {
             InitializeComponent();
         }
+        private void Canvas_Panel_MouseMove(object sender, MouseEventArgs e)
+        {
+            Cord_Label.Text = "X: " + e.X + "  Y: " + e.Y;
+        }
         private void ClearCanvas_Button_Click(object sender, EventArgs e)
         {
-            CreateGraphics().Clear(Color.White);
+            Canvas_Panel.Invalidate(); // Перерисовывем панель Canvas_Panel
         }
         private void ClearStorage_Button_Click(object sender, EventArgs e)
         {
 
         }
-        private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
+        private void DeleteSelected_Button_Click(object sender, EventArgs e)
         {
-            CCircle cirle = new CCircle(e.X, e.Y);
-            CreateGraphics().DrawEllipse(new Pen(Color.Red, 2), cirle.x, cirle.y, 2 * cirle.rad, 2 * cirle.rad);
+
+        }
+        private void Paint_Circle(ref Storage storage, int index)
+        {   // Рисует круг на панели
+            Pen pen = new Pen(storage.objects[index].color, 2);
+            Canvas_Panel.CreateGraphics().DrawEllipse(pen, storage.objects[index].x,
+                storage.objects[index].y, storage.objects[index].rad * 2, storage.objects[index].rad * 2);
         }
 
-        private void Canvas_Panel_MouseMove(object sender, MouseEventArgs e)
+        static int count_cells = 1; // Кол-во ячеек в хранилище
+        Storage storage = new Storage(count_cells); // Создаем объект хранилища
+        int index = 0; // Индекс нынешнего элемента в хранилище
+        private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
-            Cord_Label.Text = "X: " + e.X + "  Y: " + e.Y;
+            CCircle circle = new CCircle(e.X, e.Y, Color.Azure);
+            if (storage.Occupied(count_cells) == count_cells)
+                storage.Increase_Storage(ref count_cells);
+            storage.Add_object(index, ref circle, count_cells); // Добавляем круг в хранилище
+            Paint_Circle(ref storage, index); // Вызываем функцию отрисовки круга
+            index++;
         }
     }
     public class CCircle
     {
         public int rad = 15;
         public int x, y;
+        public Color color = Color.Azure;
         public CCircle()
         {
             x = 0;
             y = 0;
         }
-        public CCircle(int x, int y)
+        public CCircle(int x, int y, Color color)
         {
             this.x = x - rad;
             this.y = y - rad;
+            this.color = color;
         }
         ~CCircle() { }
     }
@@ -72,22 +91,21 @@ namespace Circles_on_the_Form
 
         public void Add_object(int index, ref CCircle new_object, int amount)
         {   // Добавляет ячейку в хранилище
-            if (Is_empty(index)) // Если ячейка пуста, добавляет объект
-                objects[index] = new_object;
-            else
-            {   // Иначе ищет свободное место
-                while (objects[index] != null)
-                {
-                    index = (index + 1) % amount;
-                }
-                objects[index] = new_object;
+            // Ищет свободное место
+            while (objects[index] != null)
+            {
+                index = (index + 1) % amount;
             }
+            objects[index] = new_object;
         }
 
         public void Delete_object(ref int index)
         {   // Удаляет объект из хранилища
-            objects[index] = null;
-            index--;
+            if (objects[index] != null)
+            {
+                objects[index] = null;
+                index--;
+            }
         }
 
         public bool Is_empty(int index)
@@ -106,8 +124,8 @@ namespace Circles_on_the_Form
             return count_occupied;
         }
 
-        public void DoubleSize(ref int size)
-        {   // Функция для увеличения кол-ва элементов в хранилище в 2 раза 
+        public void Increase_Storage(ref int size)
+        {
             Storage new_storage = new Storage(size * 2);
             for (int i = 0; i < size; ++i)
                 new_storage.objects[i] = objects[i];
