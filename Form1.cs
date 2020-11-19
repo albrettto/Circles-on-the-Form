@@ -20,23 +20,37 @@ namespace Circles_on_the_Form
         {
             Cord_Label.Text = "X: " + e.X + "  Y: " + e.Y;
         }
+        private void Main_Form_MouseMove(object sender, MouseEventArgs e)
+        {
+            Cord_Label.Text = "";
+        }
         private void ClearCanvas_Button_Click(object sender, EventArgs e)
         {
             Canvas_Panel.Invalidate(); // Перерисовывем панель Canvas_Panel
         }
         private void ClearStorage_Button_Click(object sender, EventArgs e)
         {
-
+            for (int i = 0; i < count_cells; ++i)
+                storage.Delete_object(ref i);
         }
         private void DeleteSelected_Button_Click(object sender, EventArgs e)
         {
 
         }
+        private void ShowCircles_Button_Click(object sender, EventArgs e)
+        {
+            if(storage.Occupied(count_cells) != 0)
+                for (int i = 0; i < count_cells; ++i)
+                    Paint_Circle(ref storage, i);
+        }
         private void Paint_Circle(ref Storage storage, int index)
         {   // Рисует круг на панели
-            Pen pen = new Pen(storage.objects[index].color, 2);
-            Canvas_Panel.CreateGraphics().DrawEllipse(pen, storage.objects[index].x,
-                storage.objects[index].y, storage.objects[index].rad * 2, storage.objects[index].rad * 2);
+            if (storage.objects[index] != null)
+            {
+                Pen pen = new Pen(storage.objects[index].color, 2);
+                Canvas_Panel.CreateGraphics().DrawEllipse(pen, storage.objects[index].x,
+                    storage.objects[index].y, storage.objects[index].rad * 2, storage.objects[index].rad * 2);
+            }
         }
 
         static int count_cells = 1; // Кол-во ячеек в хранилище
@@ -51,6 +65,8 @@ namespace Circles_on_the_Form
             Paint_Circle(ref storage, index); // Вызываем функцию отрисовки круга
             index++;
         }
+
+
     }
     public class CCircle
     {

@@ -34,6 +34,7 @@
             this.Cord_Label = new System.Windows.Forms.Label();
             this.Canvas_Panel = new System.Windows.Forms.Panel();
             this.DeleteSelected_Button = new System.Windows.Forms.Button();
+            this.ShowCircles_Button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ClearCanvas_Button
@@ -96,12 +97,26 @@
             this.DeleteSelected_Button.UseVisualStyleBackColor = false;
             this.DeleteSelected_Button.Click += new System.EventHandler(this.DeleteSelected_Button_Click);
             // 
+            // ShowCircles_Button
+            // 
+            this.ShowCircles_Button.BackColor = System.Drawing.Color.Gainsboro;
+            this.ShowCircles_Button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ShowCircles_Button.ForeColor = System.Drawing.Color.Black;
+            this.ShowCircles_Button.Location = new System.Drawing.Point(411, 416);
+            this.ShowCircles_Button.Name = "ShowCircles_Button";
+            this.ShowCircles_Button.Size = new System.Drawing.Size(174, 22);
+            this.ShowCircles_Button.TabIndex = 5;
+            this.ShowCircles_Button.Text = "Показать круги из хранилища";
+            this.ShowCircles_Button.UseVisualStyleBackColor = false;
+            this.ShowCircles_Button.Click += new System.EventHandler(this.ShowCircles_Button_Click);
+            // 
             // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ShowCircles_Button);
             this.Controls.Add(this.DeleteSelected_Button);
             this.Controls.Add(this.Cord_Label);
             this.Controls.Add(this.ClearStorage_Button);
@@ -112,6 +127,7 @@
             this.Name = "Main_Form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Лабораторная работа 4";
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Main_Form_MouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -124,6 +140,7 @@
         private System.Windows.Forms.Label Cord_Label;
         private System.Windows.Forms.Panel Canvas_Panel;
         private System.Windows.Forms.Button DeleteSelected_Button;
+        private System.Windows.Forms.Button ShowCircles_Button;
     }
 }
 
