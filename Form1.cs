@@ -16,23 +16,23 @@ namespace Circles_on_the_Form
         {
             InitializeComponent();
         }
-        private void Main_Form_MouseDown(object sender, MouseEventArgs e)
-        {
-            CCircle cirle = new CCircle(e.X, e.Y);
-            CreateGraphics().DrawEllipse(new Pen(Color.Azure, 2), cirle.x, cirle.y, 2 * cirle.rad, 2 * cirle.rad);
-            
-        }
         private void ClearCanvas_Button_Click(object sender, EventArgs e)
         {
-            CreateGraphics().Clear(Color.Gray);
+            CreateGraphics().Clear(Color.White);
         }
         private void ClearStorage_Button_Click(object sender, EventArgs e)
         {
 
         }
-        private void Main_Form_MouseMove(object sender, MouseEventArgs e)
+        private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
-            Cord_Label.Text = "X: " + e.X + "  Y: " + e.Y; 
+            CCircle cirle = new CCircle(e.X, e.Y);
+            CreateGraphics().DrawEllipse(new Pen(Color.Red, 2), cirle.x, cirle.y, 2 * cirle.rad, 2 * cirle.rad);
+        }
+
+        private void Canvas_Panel_MouseMove(object sender, MouseEventArgs e)
+        {
+            Cord_Label.Text = "X: " + e.X + "  Y: " + e.Y;
         }
     }
     public class CCircle
@@ -52,49 +52,74 @@ namespace Circles_on_the_Form
         ~CCircle() { }
     }
 
+    class Storage
+    {
+        public CCircle[] objects;
 
-    //unsafe class Storage
-    //{
-    //    CCircle** circles;
-    //    Storage() { }
+        public Storage(int amount)
+        {   // Конструктор по умолчанию 
+            objects = new CCircle[amount];
+            for (int i = 0; i < amount; ++i)
+                objects[i] = null;
+        }
 
-    //    void initialisat(int count)
-    //    {
-    //        circles = new CCircle*[count];
-    //        for (int i = 0; i < count; ++i)
-    //            circles[i] = null;
-    //    }
+        public void Initialization(int amount)
+        {   // Выделяем amount мест в хранилище
+            objects = new CCircle[amount];
+            for (int i = 0; i < amount; ++i)
+                objects[i] = null;
+        }
 
-    //    void add_object(int index, CCircle* circle)
-    //    {
-    //        circles[index] = circle;
-    //    }
+        public void Add_object(int index, ref CCircle new_object, int amount)
+        {   // Добавляет ячейку в хранилище
+            if (Is_empty(index)) // Если ячейка пуста, добавляет объект
+                objects[index] = new_object;
+            else
+            {   // Иначе ищет свободное место
+                while (objects[index] != null)
+                {
+                    index = (index + 1) % amount;
+                }
+                objects[index] = new_object;
+            }
+        }
 
-    //    //void delete_object(int index)
-    //    //{
-    //    //    delete circles[index];
-    //    //    circles[index] = null;
-    //    //}
+        public void Delete_object(ref int index)
+        {   // Удаляет объект из хранилища
+            objects[index] = null;
+            index--;
+        }
 
-    //    bool is_empty(int index)
-    //    {
-    //        if (circles[index] == null)
-    //            return true;
-    //        else return false;
-    //    }
+        public bool Is_empty(int index)
+        {   // Проверяет занято ли место хранилище
+            if (objects[index] == null)
+                return true;
+            else return false;
+        }
 
-    //    int occupied(int size)
-    //    {
-    //        int count_occupied = 0;
-    //        for (int i = 0; i < size; ++i)
-    //            if (!is_empty(i))
-    //                ++count_occupied;
-    //        return count_occupied;
-    //    }
+        public int Occupied(int size)
+        { // Определяет кол-во занятых мест в хранилище
+            int count_occupied = 0;
+            for (int i = 0; i < size; ++i)
+                if (!Is_empty(i))
+                    ++count_occupied;
+            return count_occupied;
+        }
 
-    //    ~Storage()
-    //    {
-
-    //    }
-    //};
+        public void DoubleSize(ref int size)
+        {   // Функция для увеличения кол-ва элементов в хранилище в 2 раза 
+            Storage new_storage = new Storage(size * 2);
+            for (int i = 0; i < size; ++i)
+                new_storage.objects[i] = objects[i];
+            for (int i = size; i < (size * 2) - 1; ++i)
+            {
+                new_storage.objects[i] = null;
+            }
+            size = size * 2;
+            Initialization(size);
+            for (int i = 0; i < size; ++i)
+                objects[i] = new_storage.objects[i];
+        }
+        ~Storage() { }
+    };
 }

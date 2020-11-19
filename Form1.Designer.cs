@@ -32,6 +32,7 @@
             this.ClearCanvas_Button = new System.Windows.Forms.Button();
             this.ClearStorage_Button = new System.Windows.Forms.Button();
             this.Cord_Label = new System.Windows.Forms.Label();
+            this.Canvas_Panel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // ClearCanvas_Button
@@ -63,27 +64,39 @@
             // Cord_Label
             // 
             this.Cord_Label.AutoSize = true;
-            this.Cord_Label.ForeColor = System.Drawing.Color.Lime;
+            this.Cord_Label.ForeColor = System.Drawing.Color.Indigo;
             this.Cord_Label.Location = new System.Drawing.Point(713, 9);
             this.Cord_Label.Name = "Cord_Label";
             this.Cord_Label.Size = new System.Drawing.Size(0, 13);
             this.Cord_Label.TabIndex = 2;
             // 
+            // Canvas_Panel
+            // 
+            this.Canvas_Panel.BackColor = System.Drawing.Color.Gray;
+            this.Canvas_Panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Canvas_Panel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Canvas_Panel.Location = new System.Drawing.Point(12, 9);
+            this.Canvas_Panel.Name = "Canvas_Panel";
+            this.Canvas_Panel.Size = new System.Drawing.Size(695, 401);
+            this.Canvas_Panel.TabIndex = 3;
+            this.Canvas_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Canvas_Panel_MouseDown);
+            this.Canvas_Panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Canvas_Panel_MouseMove);
+            // 
             // Main_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gray;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.Cord_Label);
             this.Controls.Add(this.ClearStorage_Button);
             this.Controls.Add(this.ClearCanvas_Button);
+            this.Controls.Add(this.Canvas_Panel);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main_Form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Лабораторная работа 4";
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Main_Form_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Main_Form_MouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -94,6 +107,7 @@
         private System.Windows.Forms.Button ClearCanvas_Button;
         private System.Windows.Forms.Button ClearStorage_Button;
         private System.Windows.Forms.Label Cord_Label;
+        private System.Windows.Forms.Panel Canvas_Panel;
     }
 }
 
