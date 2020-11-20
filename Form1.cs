@@ -27,34 +27,47 @@ namespace Circles_on_the_Form
         private void ClearCanvas_Button_Click(object sender, EventArgs e)
         {
             Canvas_Panel.Refresh(); // Перерисовывем панель Canvas_Panel
+            for (int i = 0; i < count_cells; ++i)
+                if (!storage.Is_empty(i))
+                {
+                    storage.objects[i].is_drawed = false;
+                    storage.objects[i].color = Color.Azure;
+                }
         }
         private void ClearStorage_Button_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < count_cells; ++i)
                 storage.Delete_object(ref i);
-            index = 0;
+            count_selected = 0;
         }
         private void DeleteSelected_Button_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < count_cells; ++i)
-                if (storage.Is_empty(i) == false && storage.objects[i].color == Color.Red)
-                    storage.Delete_object(ref i);
+            if (storage.Occupied(count_cells) != 0)
+                for (int i = 0; i < count_cells; ++i)
+                    if (storage.Is_empty(i) == false && storage.objects[i].color == Color.Red)
+                        storage.Delete_object(ref i);
             ClearCanvas_Button_Click(sender, e);
             ShowCircles_Button_Click(sender, e);
         }
         private void ShowCircles_Button_Click(object sender, EventArgs e)
         {
-            if(storage.Occupied(count_cells) != 0)
-                for (int i = 0; i < count_cells; ++i)
-                    Paint_Circle(ref storage, i);
-        }
-        private void Paint_Circle(ref Storage storage, int index)
-        {   // Рисует круг на панели
-            if (storage.objects[index] != null)
+            if (storage.Occupied(count_cells) != 0)
             {
-                Pen pen = new Pen(storage.objects[index].color, 2);
-                Canvas_Panel.CreateGraphics().DrawEllipse(pen, storage.objects[index].x,
-                    storage.objects[index].y, storage.objects[index].rad * 2, storage.objects[index].rad * 2);
+                for (int i = 0; i < count_cells; ++i)
+                {
+                    Paint_Circle(ref storage, i);
+                    if (!storage.Is_empty(i))
+                        storage.objects[i].is_drawed = true;
+                }
+            }
+        }
+        private void Paint_Circle(ref Storage storage, int count_selected)
+        {   // Рисует круг на панели
+            if (storage.objects[count_selected] != null)
+            {
+                Pen pen = new Pen(storage.objects[count_selected].color, 2);
+                Canvas_Panel.CreateGraphics().DrawEllipse(pen, storage.objects[count_selected].x,
+                    storage.objects[count_selected].y, storage.objects[count_selected].rad * 2, storage.objects[count_selected].rad * 2);
             }
         }
         private void Remove_Selection(ref Storage storage)
@@ -63,23 +76,27 @@ namespace Circles_on_the_Form
                 if (!storage.Is_empty(i))
                 {
                     storage.objects[i].color = Color.Azure;
-                    Paint_Circle(ref storage, i);
+                    if(storage.objects[i].is_drawed == true)
+                        Paint_Circle(ref storage, i);
                 }
         }
 
         static int count_cells = 1; // Кол-во ячеек в хранилище
         Storage storage = new Storage(count_cells); // Создаем объект хранилища
-        int index = 0; // Индекс элемента в хранилище
+        int count_selected = 0; // Кол-во элементов в хранилище
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
             CCircle circle = new CCircle(e.X, e.Y, Color.Azure);
-            if (storage.Occupied(count_cells) == count_cells)
+            if (count_selected == count_cells)
                 storage.Increase_Storage(ref count_cells);
             int selected_item = Check_Circle(ref storage, count_cells, circle.x, circle.y);
             if (selected_item != -1)
             {
                 if (Control.ModifierKeys == Keys.Control)
-                {   // Если нажат ctrl, то выделяем выделяем несколько объектов
+                {   // Если нажат ctrl, то выделяем несколько объектов
+                        storage.objects[selected_item].color = Color.Azure;
+                        Paint_Circle(ref storage, selected_item); // Вызываем функцию отрисовки круга
+                    // Вызываем функцию отрисовки круга
                     storage.objects[selected_item].color = Color.Red;
                     Paint_Circle(ref storage, selected_item); // Вызываем функцию отрисовки круга
                 }
@@ -92,10 +109,10 @@ namespace Circles_on_the_Form
                 return;
             }
             Remove_Selection(ref storage);
-            storage.Add_object(index, ref circle, count_cells); // Добавляем круг в хранилище
-            storage.objects[index].color = Color.Red;
-            Paint_Circle(ref storage, index); // Вызываем функцию отрисовки круга
-            index++;
+            storage.Add_object(count_selected, ref circle, count_cells); // Добавляем круг в хранилище
+            storage.objects[count_selected].color = Color.Red;
+            Paint_Circle(ref storage, count_selected); // Вызываем функцию отрисовки круга
+            count_selected++;
         }
 
         private int Check_Circle(ref Storage storage, int size, int x, int y)
@@ -121,6 +138,7 @@ namespace Circles_on_the_Form
     {
         public int rad = 15;
         public int x, y;
+        public bool is_drawed = true;
         public Color color = Color.Azure;
         public CCircle()
         {
@@ -154,28 +172,28 @@ namespace Circles_on_the_Form
                 objects[i] = null;
         }
 
-        public void Add_object(int index, ref CCircle new_object, int amount)
+        public void Add_object(int count_selected, ref CCircle new_object, int amount)
         {   // Добавляет ячейку в хранилище
             // Ищет свободное место
-            while (objects[index] != null)
+            while (objects[count_selected] != null)
             {
-                index = (index + 1) % amount;
+                count_selected = (count_selected + 1) % amount;
             }
-            objects[index] = new_object;
+            objects[count_selected] = new_object;
         }
 
-        public void Delete_object(ref int index)
+        public void Delete_object(ref int count_selected)
         {   // Удаляет объект из хранилища
-            if (objects[index] != null)
+            if (objects[count_selected] != null)
             {
-                objects[index] = null;
-                index--;
+                objects[count_selected] = null;
+                count_selected--;
             }
         }
 
-        public bool Is_empty(int index)
+        public bool Is_empty(int count_selected)
         {   // Проверяет занято ли место хранилище
-            if (objects[index] == null)
+            if (objects[count_selected] == null)
                 return true;
             else return false;
         }
