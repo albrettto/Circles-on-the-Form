@@ -31,7 +31,7 @@ namespace Circles_on_the_Form
                 if (!storage.Is_empty(i))
                 {
                     storage.objects[i].is_drawed = false;
-                    storage.objects[i].color = Color.Azure;
+                    storage.objects[i].color = default_color;
                 }
         }
         private void ClearStorage_Button_Click(object sender, EventArgs e)
@@ -44,7 +44,7 @@ namespace Circles_on_the_Form
         {
             if (storage.Occupied(count_cells) != 0)
                 for (int i = 0; i < count_cells; ++i)
-                    if (storage.Is_empty(i) == false && storage.objects[i].color == Color.Red)
+                    if (storage.Is_empty(i) == false && storage.objects[i].color == selected_color)
                         storage.Delete_object(ref i);
             ClearCanvas_Button_Click(sender, e);
             ShowCircles_Button_Click(sender, e);
@@ -75,8 +75,8 @@ namespace Circles_on_the_Form
             for (int i = 0; i < count_cells; ++i)
                 if (!storage.Is_empty(i))
                 {
-                    storage.objects[i].color = Color.Azure;
-                    if(storage.objects[i].is_drawed == true)
+                    storage.objects[i].color = default_color;
+                    if (storage.objects[i].is_drawed == true)
                         Paint_Circle(ref storage, i);
                 }
         }
@@ -84,9 +84,11 @@ namespace Circles_on_the_Form
         static int count_cells = 1; // Кол-во ячеек в хранилище
         Storage storage = new Storage(count_cells); // Создаем объект хранилища
         int count_selected = 0; // Кол-во элементов в хранилище
+        static Color default_color = Color.Azure;
+        Color selected_color = Color.Red;
         private void Canvas_Panel_MouseDown(object sender, MouseEventArgs e)
         {
-            CCircle circle = new CCircle(e.X, e.Y, Color.Azure);
+            CCircle circle = new CCircle(e.X, e.Y, default_color);
             if (count_selected == count_cells)
                 storage.Increase_Storage(ref count_cells);
             int selected_item = Check_Circle(ref storage, count_cells, circle.x, circle.y);
@@ -94,23 +96,23 @@ namespace Circles_on_the_Form
             {
                 if (Control.ModifierKeys == Keys.Control)
                 {   // Если нажат ctrl, то выделяем несколько объектов
-                        storage.objects[selected_item].color = Color.Azure;
-                        Paint_Circle(ref storage, selected_item); // Вызываем функцию отрисовки круга
+                    storage.objects[selected_item].color = default_color;
+                    Paint_Circle(ref storage, selected_item); // Вызываем функцию отрисовки круга
                     // Вызываем функцию отрисовки круга
-                    storage.objects[selected_item].color = Color.Red;
+                    storage.objects[selected_item].color = selected_color;
                     Paint_Circle(ref storage, selected_item); // Вызываем функцию отрисовки круга
                 }
                 else
                 {   // Иначе выделяем только один объект
                     Remove_Selection(ref storage);
-                    storage.objects[selected_item].color = Color.Red;
+                    storage.objects[selected_item].color = selected_color;
                     Paint_Circle(ref storage, selected_item); // Вызываем функцию отрисовки круга
                 }
                 return;
             }
             Remove_Selection(ref storage);
             storage.Add_object(count_selected, ref circle, count_cells); // Добавляем круг в хранилище
-            storage.objects[count_selected].color = Color.Red;
+            storage.objects[count_selected].color = selected_color;
             Paint_Circle(ref storage, count_selected); // Вызываем функцию отрисовки круга
             count_selected++;
         }
@@ -133,94 +135,88 @@ namespace Circles_on_the_Form
             }
             return -1;
         }
+
+        public class CCircle
+        {
+            public int rad = 15; // Постоянный радиус
+            public int x, y;
+            public bool is_drawed = true;
+            public Color color = default_color;
+            public CCircle()
+            {
+                x = 0;
+                y = 0;
+            }
+            public CCircle(int x, int y, Color color)
+            {
+                this.x = x - rad;
+                this.y = y - rad;
+                this.color = color;
+            }
+            ~CCircle() { }
+        }
+
+        class Storage
+        {
+            public CCircle[] objects;
+            public Storage(int amount)
+            {   // Конструктор по умолчанию 
+                objects = new CCircle[amount];
+                for (int i = 0; i < amount; ++i)
+                    objects[i] = null;
+            }
+            public void Initialization(int amount)
+            {   // Выделяем amount мест в хранилище
+                objects = new CCircle[amount];
+                for (int i = 0; i < amount; ++i)
+                    objects[i] = null;
+            }
+            public void Add_object(int count_selected, ref CCircle new_object, int amount)
+            {   // Добавляет ячейку в хранилище
+                // Ищет свободное место
+                while (objects[count_selected] != null)
+                {
+                    count_selected = (count_selected + 1) % amount;
+                }
+                objects[count_selected] = new_object;
+            }
+            public void Delete_object(ref int count_selected)
+            {   // Удаляет объект из хранилища
+                if (objects[count_selected] != null)
+                {
+                    objects[count_selected] = null;
+                    count_selected--;
+                }
+            }
+            public bool Is_empty(int count_selected)
+            {   // Проверяет занято ли место хранилище
+                if (objects[count_selected] == null)
+                    return true;
+                else return false;
+            }
+            public int Occupied(int size)
+            { // Определяет кол-во занятых мест в хранилище
+                int count_occupied = 0;
+                for (int i = 0; i < size; ++i)
+                    if (!Is_empty(i))
+                        ++count_occupied;
+                return count_occupied;
+            }
+            public void Increase_Storage(ref int size)
+            {
+                Storage new_storage = new Storage(size * 2);
+                for (int i = 0; i < size; ++i)
+                    new_storage.objects[i] = objects[i];
+                for (int i = size; i < (size * 2) - 1; ++i)
+                {
+                    new_storage.objects[i] = null;
+                }
+                size = size * 2;
+                Initialization(size);
+                for (int i = 0; i < size; ++i)
+                    objects[i] = new_storage.objects[i];
+            }
+            ~Storage() { }
+        };
     }
-    public class CCircle
-    {
-        public int rad = 15;
-        public int x, y;
-        public bool is_drawed = true;
-        public Color color = Color.Azure;
-        public CCircle()
-        {
-            x = 0;
-            y = 0;
-        }
-        public CCircle(int x, int y, Color color)
-        {
-            this.x = x - rad;
-            this.y = y - rad;
-            this.color = color;
-        }
-        ~CCircle() { }
-    }
-
-    class Storage
-    {
-        public CCircle[] objects;
-
-        public Storage(int amount)
-        {   // Конструктор по умолчанию 
-            objects = new CCircle[amount];
-            for (int i = 0; i < amount; ++i)
-                objects[i] = null;
-        }
-
-        public void Initialization(int amount)
-        {   // Выделяем amount мест в хранилище
-            objects = new CCircle[amount];
-            for (int i = 0; i < amount; ++i)
-                objects[i] = null;
-        }
-
-        public void Add_object(int count_selected, ref CCircle new_object, int amount)
-        {   // Добавляет ячейку в хранилище
-            // Ищет свободное место
-            while (objects[count_selected] != null)
-            {
-                count_selected = (count_selected + 1) % amount;
-            }
-            objects[count_selected] = new_object;
-        }
-
-        public void Delete_object(ref int count_selected)
-        {   // Удаляет объект из хранилища
-            if (objects[count_selected] != null)
-            {
-                objects[count_selected] = null;
-                count_selected--;
-            }
-        }
-
-        public bool Is_empty(int count_selected)
-        {   // Проверяет занято ли место хранилище
-            if (objects[count_selected] == null)
-                return true;
-            else return false;
-        }
-
-        public int Occupied(int size)
-        { // Определяет кол-во занятых мест в хранилище
-            int count_occupied = 0;
-            for (int i = 0; i < size; ++i)
-                if (!Is_empty(i))
-                    ++count_occupied;
-            return count_occupied;
-        }
-
-        public void Increase_Storage(ref int size)
-        {
-            Storage new_storage = new Storage(size * 2);
-            for (int i = 0; i < size; ++i)
-                new_storage.objects[i] = objects[i];
-            for (int i = size; i < (size * 2) - 1; ++i)
-            {
-                new_storage.objects[i] = null;
-            }
-            size = size * 2;
-            Initialization(size);
-            for (int i = 0; i < size; ++i)
-                objects[i] = new_storage.objects[i];
-        }
-        ~Storage() { }
-    };
 }
